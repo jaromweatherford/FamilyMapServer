@@ -1,5 +1,7 @@
 package Service;
 
+import ResponseObjects.MessageResponse;
+
 /** ClearService handles the model manipulation and database calls for clearing operations
  *
  * @author jarom
@@ -14,7 +16,7 @@ public class ClearService {
      * run removes everything from the database. No questions asked, none answered.
      * @throws InternalServerErrorException
      */
-    public void run()  throws InternalServerErrorException {
+    public MessageResponse run()  throws InternalServerErrorException {
         throw new InternalServerErrorException("I have not been written yet :(");
     }
 }
