@@ -8,7 +8,8 @@ public class DatabaseException extends Exception {
 
     private String message;
 
-    public DatabaseConnection(String message) {
+    public DatabaseException(String message) {
         this.message = message;
     }
+
 }

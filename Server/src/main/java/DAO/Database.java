@@ -30,7 +30,7 @@ public class Database {
     /** openConnection prepares the database to read or make changes
      *
      */
-    void openConnection() throws DatabaseException {
+    public void openConnection() throws DatabaseException {
         try {
             final String CONNECTION_URL = "jdbc:sqlite:spellcheck.sqlite";
 
@@ -46,7 +46,7 @@ public class Database {
     /** closeConnection closes the connection
      *
      */
-    void closeConnection(boolean commit) throws DatabaseException {
+    public void closeConnection(boolean commit) throws DatabaseException {
         try {
             if (commit) {
                 connection.commit();
@@ -59,17 +59,6 @@ public class Database {
         }
         catch (SQLException e) {
             throw new DatabaseException("closeConnection failed");
-        }
-    }
-
-    public void createTables() throws DatabaseException {
-        try {
-            Statement stmt = null;
-            try {
-                stmt = connection.createStatement();
-
-                stmt.executeUpdate("drop table if exists ")
-            }
         }
     }
 

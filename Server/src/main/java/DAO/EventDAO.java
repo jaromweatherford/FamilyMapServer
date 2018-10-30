@@ -60,10 +60,10 @@ public class EventDAO {
 
     /** destroy takes an event and removes it from the database
      *
-     * @param person            The event to be removed
+     * @param event            The event to be removed
      * @return                  false if the deletion failed, true if it succeeded
      */
-    public boolean destroy(Person person) {
+    public boolean destroy(Event event) {
         return false;
     }
 }
