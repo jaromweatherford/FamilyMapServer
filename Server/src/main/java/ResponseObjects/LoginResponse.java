@@ -10,17 +10,17 @@ import Model.AuthToken;
  * @version 0.0
  */
 public class LoginResponse {
-    private AuthToken authToken;
+    private String authToken;
     private String userName;
-    private UUID personID;
+    private String personID;
 
-    public LoginResponse(AuthToken authToken, String userName, UUID personID) {
+    public LoginResponse(String authToken, String userName, String personID) {
         this.authToken = authToken;
         this.userName = userName;
         this.personID = personID;
     }
 
-    public AuthToken getAuthToken() {
+    public String getAuthToken() {
         return authToken;
     }
 
@@ -28,7 +28,7 @@ public class LoginResponse {
         return userName;
     }
 
-    public UUID getPersonID() {
+    public String getPersonID() {
         return personID;
     }
 }

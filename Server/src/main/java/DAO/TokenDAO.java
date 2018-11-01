@@ -1,6 +1,9 @@
 package DAO;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -25,16 +28,46 @@ public class TokenDAO {
      * @return                  false if the update failed, true if it succeeded
      */
     public boolean create(AuthToken token) {
-        return false;
+        if (connection == null) {
+            return false;
+        }
+        String sql = "INSERT INTO AuthTokens(TokenCode, UserID) VALUES(?, ?)";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, token.getCode());
+            statement.setString(2, token.getUserName());
+            statement.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     /** read takes a UUID and returns a token with that UUID as its ID, or NULL if it doesn't exist
      *
-     * @param ID                The ID of the token to be returned
-     * @return                  The token with that ID, or NULL if no token has that ID
+     * @param code              The code of the token to be returned
+     * @return                  The token with that code, or NULL if no token has that ID
      */
-    public AuthToken read(UUID ID) {
-        return null;
+    public AuthToken read(String code) {
+        String sql = "SELECT * FROM AuthTokens WHERE TokenCode = ?";
+        AuthToken token = null;
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, code);
+            ResultSet rs = statement.executeQuery();
+
+            if (rs.next()) {
+                token = new AuthToken();
+                readToken(rs, token);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return token;
     }
 
     /** read takes a user and returns all tokens related to that user, the list will be empty
@@ -44,7 +77,25 @@ public class TokenDAO {
      * @return                  A list of all tokens found to relate to that user
      */
     public ArrayList<AuthToken> read(User user) {
-        return new ArrayList<>();
+
+        String sql = "SELECT * FROM AuthTokens WHERE UserID = ?";
+        ArrayList<AuthToken> tokens = new ArrayList<>();
+
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, user.getUsername());
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                AuthToken token = new AuthToken();
+                readToken(rs, token);
+                tokens.add(token);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+        return tokens;
     }
 
     /** destroy takes a token and removes it from the database
@@ -53,6 +104,26 @@ public class TokenDAO {
      * @return                  false if the deletion failed, true if it succeeded
      */
     public boolean destroy(AuthToken token) {
-        return false;
+        String sql = "DELETE FROM AuthTokens WHERE TokenCode = ?";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, token.getCode());
+            statement.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    private void readToken(ResultSet rs, AuthToken token) {
+        try {
+            token.setCode(rs.getString("TokenCode"));
+            token.setUserName(rs.getString("UserID"));
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

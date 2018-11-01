@@ -1,5 +1,6 @@
 package Service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +31,9 @@ public class ClearService {
      * @throws InternalServerErrorException
      */
     public MessageResponse run()  throws InternalServerErrorException {
-        Database db = new Database();
+        Database db = null;
         try {
+            db = new Database();
             db.openConnection();
             UserDAO userDAO = db.getUserDAO();
             PersonDAO personDAO = db.getPersonDAO();
@@ -58,10 +60,24 @@ public class ClearService {
             for (User user: userList) {
                 userDAO.destroy(user);
             }
+            db.closeConnection(true);
+            db = null;
+            return new MessageResponse("Successfully cleared");
         }
         catch (DatabaseException e) {
-            e.printStackTrace();
+            throw new InternalServerErrorException("Internal server errors prevented clearing");
         }
-        throw new InternalServerErrorException("I have not been written yet :(");
+        finally {
+            if (db != null) {
+                try {
+                    db.closeConnection(false);
+                    db = null;
+                }
+                catch (DatabaseException e) {
+                    System.out.println("FAILED TO CLOSE CONNECTION");
+                    throw new InternalServerErrorException("FAILED TO CLOSE CONNECTION!");
+                }
+            }
+        }
     }
 }

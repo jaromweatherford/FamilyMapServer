@@ -14,9 +14,9 @@ public class Event {
         BIRTH, DEATH, MARRIAGE, BAPTISM, CHRISTENING
     }
 
-    private UUID ID;
-    private User descendant;
-    private Person person;
+    private String ID;
+    private String descendant;
+    private String person;
     private double latitude;
     private double longitude;
     private String country;
@@ -25,9 +25,21 @@ public class Event {
     private int year;
 
 
-    public Event(User descendant, Person person, double latitude, double longitude, String country,
+    public Event() {
+        this.ID = "";
+        this.descendant = "";
+        this.person = "";
+        this.latitude = 0;
+        this.longitude = 0;
+        this.country = "";
+        this.city = "";
+        this.type = EventType.BIRTH;
+        this.year = 0;
+    }
+
+    public Event(String descendant, String person, double latitude, double longitude, String country,
                  String city, EventType type, int year) {
-        this.ID = UUID.randomUUID();
+        this.ID = UUID.randomUUID().toString();
         this.descendant = descendant;
         this.person = person;
         this.latitude = latitude;
@@ -38,15 +50,15 @@ public class Event {
         this.year = year;
     }
 
-    public UUID getID() {
+    public String getID() {
         return ID;
     }
 
-    public User getDescendant() {
+    public String getDescendant() {
         return descendant;
     }
 
-    public Person getPerson() {
+    public String getPerson() {
         return person;
     }
 
@@ -76,15 +88,15 @@ public class Event {
 
 
 
-    public void setID(UUID ID) {
+    public void setID(String ID) {
         this.ID = ID;
     }
 
-    public void setDescendant(User descendant) {
+    public void setDescendant(String descendant) {
         this.descendant = descendant;
     }
 
-    public void setPerson(Person person) {
+    public void setPerson(String person) {
         this.person = person;
     }
 

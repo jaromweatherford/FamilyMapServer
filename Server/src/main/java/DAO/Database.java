@@ -32,11 +32,16 @@ public class Database {
      */
     public void openConnection() throws DatabaseException {
         try {
-            final String CONNECTION_URL = "jdbc:sqlite:spellcheck.sqlite";
+            final String CONNECTION_URL = "jdbc:sqlite:FamilyMapServer.db";
 
             connection = DriverManager.getConnection(CONNECTION_URL);
 
             connection.setAutoCommit(false);
+
+            userDAO = new UserDAO(connection);
+            personDAO = new PersonDAO(connection);
+            eventDAO = new EventDAO(connection);
+            tokenDAO = new TokenDAO(connection);
         }
         catch (SQLException e) {
             throw new DatabaseException("openConnectionFailed");
@@ -56,6 +61,11 @@ public class Database {
             }
             connection.close();
             connection = null;
+
+            userDAO = null;
+            personDAO = null;
+            eventDAO = null;
+            tokenDAO = null;
         }
         catch (SQLException e) {
             throw new DatabaseException("closeConnection failed");

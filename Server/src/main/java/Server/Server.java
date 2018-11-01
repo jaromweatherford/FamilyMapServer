@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 
 import Handler.ClearHandler;
 import Handler.FileHandler;
+import Handler.LoginHandler;
+import Handler.RegisterHandler;
 
 /**
  * Created by jaromwea on 10/26/18.
@@ -46,6 +48,8 @@ public class Server {
         logger.fine("Creating Contexts");
         System.out.println("Creating Contexts");
 
+        server.createContext("/user/register", new RegisterHandler());
+        server.createContext("/user/login", new LoginHandler());
         server.createContext("/clear", new ClearHandler());
         server.createContext("/", new FileHandler());
 

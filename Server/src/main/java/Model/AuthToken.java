@@ -9,10 +9,10 @@ import java.security.SecureRandom;
  */
 public class AuthToken {
     private String code;
-    private User user;
+    private String userName;
 
-    public AuthToken(User user) {
-        this.user = user;
+    public AuthToken(String userName) {
+        this.userName = userName;
 
         //Thanks to Daniel de Zwaan: https://stackoverflow.com/questions/13992972/how-to-create-a-authentication-token-using-java
         SecureRandom random = new SecureRandom();
@@ -21,19 +21,24 @@ public class AuthToken {
         this.code = bytes.toString();
     }
 
+    public AuthToken() {
+        this.userName = "";
+        this.code = "";
+    }
+
     public String getCode() {
         return code;
     }
 
-    public User getUser() {
-        return user;
+    public String getUserName() {
+        return userName;
     }
 
     public void setCode(String code) {
         this.code = code;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
