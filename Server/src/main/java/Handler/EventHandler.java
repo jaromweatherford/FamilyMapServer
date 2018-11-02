@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.logging.Logger;
 
+import DAO.DatabaseException;
 import RequestObjects.EventRequest;
 import ResponseObjects.EventResponse;
 import ResponseObjects.MessageResponse;
@@ -82,7 +83,7 @@ public class EventHandler implements HttpHandler {
             writer.flush();
             respBody.close();
         }
-        catch (InternalServerErrorException e) {
+        catch (Exception e) {
             logger.severe("Internal server error in EventHandler");
             System.out.println("Internal server error in EventHandler");
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);

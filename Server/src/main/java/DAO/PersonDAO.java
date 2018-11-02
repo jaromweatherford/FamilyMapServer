@@ -92,17 +92,11 @@ public class PersonDAO {
             statement.setString(1, user.getUsername());
             ResultSet rs = statement.executeQuery();
 
-            System.out.println("a");
             while (rs.next()) {
-                System.out.println("b");
                 Person person = new Person();
-                System.out.println("c");
                 readPerson(rs, person);
-                System.out.println("d");
                 persons.add(person);
-                System.out.println("e");
             }
-            System.out.println("f");
         }
         catch (SQLException e) {
             e.printStackTrace();

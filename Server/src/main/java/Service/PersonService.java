@@ -3,6 +3,8 @@ package Service;
 import DAO.Database;
 import DAO.DatabaseException;
 import DAO.PersonDAO;
+import DAO.TokenDAO;
+import Model.AuthToken;
 import Model.Person;
 import RequestObjects.PersonRequest;
 import ResponseObjects.PersonResponse;
@@ -26,9 +28,17 @@ public class PersonService {
         try {
             db = new Database();
             db.openConnection();
+            TokenDAO tokenDAO = db.getTokenDAO();
+            AuthToken token = tokenDAO.read(personRequest.getAuthToken());
             PersonDAO personDAO = db.getPersonDAO();
             Person person = personDAO.read(personRequest.getPersonID());
             if (person == null) {
+                throw new PersonNotFoundException();
+            }
+            if (token == null) {
+                throw new InternalServerErrorException("Couldn't find the token");
+            }
+            if (!token.getUserName().equals(person.getDescendant())) {
                 throw new PersonNotFoundException();
             }
             PersonResponse personResponse = new PersonResponse(person);

@@ -40,7 +40,7 @@ public class PersonHandler implements HttpHandler {
                     if (new AuthorizationService().verifyAuthorization(authToken)) {
                         String url = exchange.getRequestURI().getPath();
                         String ID = url.substring(url.lastIndexOf("/") + 1);
-                        PersonRequest personRequest = new PersonRequest(ID);
+                        PersonRequest personRequest = new PersonRequest(ID, authToken);
                         PersonService personService = new PersonService();
                         PersonResponse personResponse = personService.run(personRequest);
                         exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
@@ -49,10 +49,9 @@ public class PersonHandler implements HttpHandler {
                         OutputStreamWriter writer = new OutputStreamWriter(respBody);
                         writer.write(jsonResponse);
                         writer.flush();
-                        System.out.println(jsonResponse);
                         respBody.close();
                         success = true;
-                        System.out.println("Successfully logged in");
+                        System.out.println("Successfully returned person");
 
                     }
                 }
@@ -82,7 +81,7 @@ public class PersonHandler implements HttpHandler {
             writer.flush();
             respBody.close();
         }
-        catch (InternalServerErrorException e) {
+        catch (Exception e) {
             logger.severe("Internal server error in PersonHandler");
             System.out.println("Internal server error in PersonHandler");
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);

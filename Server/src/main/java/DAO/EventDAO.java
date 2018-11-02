@@ -32,7 +32,7 @@ public class EventDAO {
         if (connection == null) {
             return false;
         }
-        String sql = "INSERT INTO Users(EventID, DescendantID, PersonID, Latitude, Longitude, " +
+        String sql = "INSERT INTO Events(EventID, DescendantID, PersonID, Latitude, Longitude, " +
                 "Country, City, EventType, Year) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -109,7 +109,7 @@ public class EventDAO {
     /** read takes a user and returns all events related to that user, the list will be empty
      * if the user is not found or if no events are found for them
      *
-     * @param descendant        The user who's events are desired
+     * @param user              The user who's events are desired
      * @return                  The event with that ID, or NULL if no event has that ID
      */
     public ArrayList<Event> read(User user) {
