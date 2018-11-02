@@ -53,14 +53,15 @@ public class Database {
      */
     public void closeConnection(boolean commit) throws DatabaseException {
         try {
-            if (commit) {
-                connection.commit();
+            if (connection != null) {
+                if (commit) {
+                    connection.commit();
+                } else {
+                    connection.rollback();
+                }
+                connection.close();
+                connection = null;
             }
-            else {
-                connection.rollback();
-            }
-            connection.close();
-            connection = null;
 
             userDAO = null;
             personDAO = null;

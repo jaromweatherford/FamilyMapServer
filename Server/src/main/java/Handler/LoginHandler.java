@@ -51,6 +51,8 @@ public class LoginHandler implements HttpHandler {
                 OutputStream respBody = exchange.getResponseBody();
                 OutputStreamWriter writer = new OutputStreamWriter(respBody);
                 writer.write(jsonResponse);
+                writer.flush();
+                System.out.println(jsonResponse);
                 respBody.close();
                 success = true;
                 System.out.println("Successfully logged in");
@@ -64,6 +66,7 @@ public class LoginHandler implements HttpHandler {
                 OutputStream respBody = exchange.getResponseBody();
                 OutputStreamWriter writer = new OutputStreamWriter(respBody);
                 writer.write(jsonResponse);
+                writer.flush();
                 respBody.close();
             }
         }
@@ -82,13 +85,14 @@ public class LoginHandler implements HttpHandler {
             exchange.getResponseBody().close();
         }
         catch (UserNotFoundException e) {
-            System.out.println("Username was unavailable");
+            System.out.println("Username was not found");
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             MessageResponse message = new MessageResponse("Username unavailable");
             String jsonResponse = gson.toJson(message);
             OutputStream respBody = exchange.getResponseBody();
             OutputStreamWriter writer = new OutputStreamWriter(respBody);
             writer.write(jsonResponse);
+            writer.flush();
             respBody.close();
         }
         catch (Exception e) {

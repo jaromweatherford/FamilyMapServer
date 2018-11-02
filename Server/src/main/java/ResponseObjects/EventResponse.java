@@ -7,14 +7,17 @@ import Model.Event;
  * @author jarom
  * @version 0.0
  */
-public class EventResponse {
-    private Event event;
+public class EventResponse extends Event {
 
     public EventResponse(Event event) {
-        this.event = event;
-    }
-
-    public Event getEvent() {
-        return event;
+        setID(event.getID());
+        setDescendant(event.getDescendant());
+        setPerson(event.getPerson());
+        setLatitude(event.getLatitude());
+        setLongitude(event.getLongitude());
+        setCountry(event.getCountry());
+        setCity(event.getCity());
+        setType(event.getType());
+        setYear(event.getYear());
     }
 }

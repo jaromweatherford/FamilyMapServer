@@ -8,26 +8,17 @@ import java.util.UUID;
  * @version 0.0
  */
 public class EventRequest {
-    private UUID eventID;
-    private String tokenCode;
+    private String eventID;
 
-    public EventRequest(UUID eventID) {
+    public EventRequest(String eventID) {
         this.eventID = eventID;
     }
 
-    public UUID getEventID() {
+    public String getEventID() {
         return eventID;
     }
 
-    public void setEventID(UUID eventID) {
+    public void setEventID(String eventID) {
         this.eventID = eventID;
-    }
-
-    public String getTokenCode() {
-        return tokenCode;
-    }
-
-    public void setTokenCode(String tokenCode) {
-        this.tokenCode = tokenCode;
     }
 }

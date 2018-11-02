@@ -7,8 +7,10 @@ import java.net.InetSocketAddress;
 import java.util.logging.Logger;
 
 import Handler.ClearHandler;
+import Handler.EventHandler;
 import Handler.FileHandler;
 import Handler.LoginHandler;
+import Handler.PersonHandler;
 import Handler.RegisterHandler;
 
 /**
@@ -50,6 +52,8 @@ public class Server {
 
         server.createContext("/user/register", new RegisterHandler());
         server.createContext("/user/login", new LoginHandler());
+        server.createContext("/person/", new PersonHandler());
+        server.createContext("/event/", new EventHandler());
         server.createContext("/clear", new ClearHandler());
         server.createContext("/", new FileHandler());
 

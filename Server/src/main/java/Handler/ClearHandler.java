@@ -42,8 +42,10 @@ public class ClearHandler implements HttpHandler {
                 OutputStream respBody = exchange.getResponseBody();
                 OutputStreamWriter writer = new OutputStreamWriter(respBody);
                 writer.write(jsonResponse);
+                writer.flush();
                 respBody.close();
                 success = true;
+                System.out.println("Successfully cleared");
             }
             if (!success) {
                 logger.fine("Failed to clear");
@@ -55,6 +57,7 @@ public class ClearHandler implements HttpHandler {
                 OutputStream respBody = exchange.getResponseBody();
                 OutputStreamWriter writer = new OutputStreamWriter(respBody);
                 writer.write(jsonResponse);
+                writer.flush();
                 respBody.close();
             }
         }
@@ -71,6 +74,9 @@ public class ClearHandler implements HttpHandler {
             e.printStackTrace();
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
+        }
+        catch (Error e) {
+            e.printStackTrace();
         }
         finally {
             logger.exiting("ClearHandler", "handle");

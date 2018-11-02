@@ -52,6 +52,7 @@ public class RegisterHandler implements HttpHandler {
                 OutputStream respBody = exchange.getResponseBody();
                 OutputStreamWriter writer = new OutputStreamWriter(respBody);
                 writer.write(jsonResponse);
+                writer.flush();
                 respBody.close();
                 success = true;
                 System.out.println("Successfully registered");
@@ -65,6 +66,7 @@ public class RegisterHandler implements HttpHandler {
                 OutputStream respBody = exchange.getResponseBody();
                 OutputStreamWriter writer = new OutputStreamWriter(respBody);
                 writer.write(jsonResponse);
+                writer.flush();
                 respBody.close();
             }
         }
@@ -90,6 +92,7 @@ public class RegisterHandler implements HttpHandler {
             OutputStream respBody = exchange.getResponseBody();
             OutputStreamWriter writer = new OutputStreamWriter(respBody);
             writer.write(jsonResponse);
+            writer.flush();
             respBody.close();
         }
         catch (Exception e) {

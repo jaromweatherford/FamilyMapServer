@@ -2,7 +2,11 @@ package Service;
 
 import DAO.Database;
 import DAO.DatabaseException;
+import DAO.PersonDAO;
+import DAO.TokenDAO;
 import DAO.UserDAO;
+import Model.AuthToken;
+import Model.Person;
 import Model.User;
 import RequestObjects.RegisterRequest;
 import ResponseObjects.LoginResponse;
@@ -34,12 +38,24 @@ public class RegisterService {
             }
             user = generateUser(registerRequest);
             userDAO.create(user);
+            AuthToken token = new AuthToken(user.getUsername());
+            TokenDAO tokenDAO = db.getTokenDAO();
+            tokenDAO.create(token);
+            Person person = new Person(user.getUsername(), user.getFirstName(), user.getLastName(),
+                                        user.getGender());
+            person.setID(user.getUsername());
+            PersonDAO personDAO = db.getPersonDAO();
+            personDAO.create(person);
             db.closeConnection(true);
             db = null;
-            return new RegisterResponse("", user.getUsername(), "");
+            return new RegisterResponse(token.getCode(), user.getUsername(), person.getID());
         }
         catch (DatabaseException e) {
             throw new InternalServerErrorException("Database failure");
+        }
+        catch (InvalidInputException e) {
+            e.printStackTrace();
+            throw new InternalServerErrorException("Invalid input for person.gender");
         }
     }
 

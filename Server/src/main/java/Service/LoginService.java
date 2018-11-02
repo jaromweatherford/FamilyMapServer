@@ -39,9 +39,11 @@ public class LoginService {
             AuthToken token = new AuthToken(loginRequest.getUserName());
             TokenDAO tokenDAO = db.getTokenDAO();
             tokenDAO.create(token);
+            PersonDAO personDAO = db.getPersonDAO();
+            Person person = personDAO.read(user.getUsername());
             db.closeConnection(true);
             db = null;
-            return new LoginResponse(token.getCode(), loginRequest.getUserName(), loginRequest.getPassword());
+            return new LoginResponse(token.getCode(), loginRequest.getUserName(), person.getID());
         }
         catch (DatabaseException e) {
             throw new InternalServerErrorException("Database failure");

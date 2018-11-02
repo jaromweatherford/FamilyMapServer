@@ -1,6 +1,6 @@
 package Model;
 
-import java.security.SecureRandom;
+import java.util.UUID;
 
 /** AuthToken holds all the information directly relating to a particular authorization token
  *
@@ -13,12 +13,7 @@ public class AuthToken {
 
     public AuthToken(String userName) {
         this.userName = userName;
-
-        //Thanks to Daniel de Zwaan: https://stackoverflow.com/questions/13992972/how-to-create-a-authentication-token-using-java
-        SecureRandom random = new SecureRandom();
-        byte bytes[] = new byte[20];
-        random.nextBytes(bytes);
-        this.code = bytes.toString();
+        this.code = UUID.randomUUID().toString();
     }
 
     public AuthToken() {

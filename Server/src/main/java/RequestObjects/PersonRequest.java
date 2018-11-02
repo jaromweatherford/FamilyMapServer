@@ -8,26 +8,17 @@ import java.util.UUID;
  * @version 0.0
  */
 public class PersonRequest {
-    private UUID personID;
-    private String tokenCode;
+    private String personID;
 
-    public PersonRequest(UUID personID) {
+    public PersonRequest(String personID) {
         this.personID = personID;
     }
 
-    public UUID getPersonID() {
+    public String getPersonID() {
         return personID;
     }
 
-    public void setPersonID(UUID personID) {
+    public void setPersonID(String personID) {
         this.personID = personID;
-    }
-
-    public String getTokenCode() {
-        return tokenCode;
-    }
-
-    public void setTokenCode(String tokenCode) {
-        this.tokenCode = tokenCode;
     }
 }

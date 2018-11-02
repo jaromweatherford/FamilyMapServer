@@ -85,7 +85,34 @@ public class PersonDAO {
      * @return                  A list of all people found to relate to that user
      */
     public ArrayList<Person> read(User user) {
-        return new ArrayList<>();
+        String sql = "SELECT * FROM Persons WHERE DescendantID = ?";
+        ArrayList<Person> persons = new ArrayList<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, user.getUsername());
+            ResultSet rs = statement.executeQuery();
+
+            System.out.println("a");
+            while (rs.next()) {
+                System.out.println("b");
+                Person person = new Person();
+                System.out.println("c");
+                readPerson(rs, person);
+                System.out.println("d");
+                persons.add(person);
+                System.out.println("e");
+            }
+            System.out.println("f");
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        if (persons == null) {
+            persons = new ArrayList<>();
+        }
+
+        return persons;
     }
 
     /** destroy takes a person and removes it from the database

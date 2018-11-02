@@ -43,11 +43,17 @@ public class ClearService {
             List<Person> personList = new ArrayList<>();
             List<AuthToken> tokenList = new ArrayList<>();
             List<Event> eventList = new ArrayList<>();
+            System.out.println("1");
             for (User user: userList) {
+                System.out.println("2");
                 personList.addAll(personDAO.read(user));
+                System.out.println("3");
                 tokenList.addAll(tokenDAO.read(user));
+                System.out.println("4");
                 eventList.addAll(eventDAO.read(user));
+                System.out.println("5");
             }
+            System.out.println("6");
             for (Event event: eventList) {
                 eventDAO.destroy(event);
             }
@@ -65,6 +71,7 @@ public class ClearService {
             return new MessageResponse("Successfully cleared");
         }
         catch (DatabaseException e) {
+            e.printStackTrace();
             throw new InternalServerErrorException("Internal server errors prevented clearing");
         }
         finally {
