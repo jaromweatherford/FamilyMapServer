@@ -1,6 +1,7 @@
 package RequestObjects;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import Model.Event;
 import Model.Person;
@@ -12,37 +13,37 @@ import Model.User;
  * @version 0.0
  */
 public class LoadRequest {
-    private ArrayList<User> users;
-    private ArrayList<Person> persons;
-    private ArrayList<Event> events;
+    private User[] users;
+    private Person[] persons;
+    private Event[] events;
 
-    public LoadRequest(ArrayList<User> users, ArrayList<Person> persons, ArrayList<Event> events) {
+    public LoadRequest(User[] users, Person[] persons, Event[] events) {
         this.users = users;
         this.persons = persons;
         this.events = events;
     }
 
-    public ArrayList<User> getUsers() {
+    public User[] getUsers() {
         return users;
     }
 
-    public ArrayList<Person> getPersons() {
+    public Person[] getPersons() {
         return persons;
     }
 
-    public ArrayList<Event> getEvents() {
+    public Event[] getEvents() {
         return events;
     }
 
-    public void setUsers(ArrayList<User> users) {
+    /*public void setUsers(List<User> users) {
         this.users = users;
     }
 
-    public void setPersons(ArrayList<Person> persons) {
+    //public void setPersons(List<Person> persons) {
         this.persons = persons;
     }
 
-    public void setEvents(ArrayList<Event> events) {
+    //public void setEvents(List<Event> events) {
         this.events = events;
-    }
+    }*/
 }

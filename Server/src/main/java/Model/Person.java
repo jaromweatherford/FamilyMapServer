@@ -11,43 +11,43 @@ import Service.InvalidInputException;
  * @version 0.0
  */
 public class Person {
-    private String ID;
+    private String personID;
     private String descendant;
-    private String fName;
-    private String lName;
-    private char gender;
-    private String fatherID;
-    private String motherID;
-    private String spouseID;
+    private String firstName;
+    private String lastName;
+    private String gender;
+    private String father;
+    private String mother;
+    private String spouse;
 
     public Person() {
-        this.ID = "";
+        this.personID = "";
         this.descendant = "";
-        this.fName = "";
-        this.lName = "";
-        this.gender = 'x';
-        this.fatherID = null;
-        this.motherID = null;
-        this.spouseID = null;
+        this.firstName = "";
+        this.lastName = "";
+        this.gender = "x";
+        this.father = null;
+        this.mother = null;
+        this.spouse = null;
     }
 
-    public Person(String descendant, String fName, String lName, char gender)
+    public Person(String descendant, String fName, String lName, String gender)
             throws InvalidInputException {
-        this.ID = UUID.randomUUID().toString();
+        this.personID = UUID.randomUUID().toString();
         this.descendant = descendant;
-        this.fName = fName;
-        this.lName = lName;
-        if (gender != 'f' && gender != 'm') {
+        this.firstName = fName;
+        this.lastName = lName;
+        if (!gender.equals("f") && !gender.equals("m")) {
             throw new InvalidInputException();
         }
         this.gender = gender;
-        this.fatherID = null;
-        this.motherID = null;
-        this.spouseID = null;
+        this.father = null;
+        this.mother = null;
+        this.spouse = null;
     }
 
     public String getID() {
-        return ID;
+        return personID;
     }
 
     public String getDescendant() {
@@ -55,31 +55,31 @@ public class Person {
     }
 
     public String getFirstName() {
-        return fName;
+        return firstName;
     }
 
     public String getLastName() {
-        return lName;
+        return lastName;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
     public String getFatherID() {
-        return fatherID;
+        return father;
     }
 
     public String getMotherID() {
-        return motherID;
+        return mother;
     }
 
     public String getSpouseID() {
-        return spouseID;
+        return spouse;
     }
 
     public void setID(String ID) {
-        this.ID = ID;
+        this.personID = ID;
     }
 
     public void setDescendant(String descendant) {
@@ -87,26 +87,26 @@ public class Person {
     }
 
     public void setFirstName(String fName) {
-        this.fName = fName;
+        this.firstName = fName;
     }
 
     public void setLastName(String lName) {
-        this.lName = lName;
+        this.lastName = lName;
     }
 
-    public void setGender(char gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
     public void setFatherID(String fatherID) {
-        this.fatherID = fatherID;
+        this.father = fatherID;
     }
 
     public void setMotherID(String motherID) {
-        this.motherID = motherID;
+        this.mother = motherID;
     }
 
     public void setSpouseID(String spouseID) {
-        this.spouseID = spouseID;
+        this.spouse = spouseID;
     }
 }

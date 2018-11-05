@@ -40,7 +40,7 @@ public class PersonDAO {
             statement.setString(2, person.getDescendant());
             statement.setString(3, person.getFirstName());
             statement.setString(4, person.getLastName());
-            statement.setString(5, Character.toString(person.getGender()));
+            statement.setString(5, person.getGender());//Character.toString(person.getGender()));
             statement.setString(6, (person.getFatherID() == null ? "NULL" : person.getFatherID()));
             statement.setString(7, (person.getMotherID() == null ? "NULL" : person.getMotherID()));
             statement.setString(8, (person.getSpouseID() == null ? "NULL" : person.getSpouseID()));
@@ -89,7 +89,7 @@ public class PersonDAO {
         ArrayList<Person> persons = new ArrayList<>();
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, user.getUsername());
+            statement.setString(1, user.getUserName());
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
@@ -135,7 +135,7 @@ public class PersonDAO {
             person.setDescendant(rs.getString("DescendantID"));
             person.setFirstName(rs.getString("FirstName"));
             person.setLastName(rs.getString("LastName"));
-            person.setGender(rs.getString("Gender").charAt(0));
+            person.setGender(rs.getString("Gender"));//.charAt(0));
             person.setFatherID(rs.getString("FatherID"));
             if (person.getFatherID().toUpperCase().equals("NULL")) {
                 person.setFatherID(null);

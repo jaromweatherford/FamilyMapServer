@@ -10,37 +10,39 @@ import Service.InvalidInputException;
  * @version 0.0
  */
 public class User {
-    private String username;
+    private String userName;
     private String password;
     private String email;
-    private String fName;
-    private String lName;
+    private String firstName;
+    private String lastName;
     private char gender;
+    private String personID;
 
     public User() {
-        this.username = "";
+        this.userName = "";
         this.password = "";
         this.email = "";
-        this.fName = "";
-        this.lName = "";
+        this.firstName = "";
+        this.lastName = "";
         this.gender = 'x';
     }
 
     public User(String username, String password, String email, String fName, String lName,
-                char gender) throws InvalidInputException {
-        this.username = username;
+                char gender, String personID) throws InvalidInputException {
+        this.userName = username;
         this.password = password;
         this.email = email;
-        this.fName = fName;
-        this.lName = lName;
+        this.firstName = fName;
+        this.lastName = lName;
         if (gender != 'f' && gender != 'm') {
             throw new InvalidInputException();
         }
         this.gender = gender;
+        this.personID = personID;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
     public String getPassword() {
@@ -52,19 +54,19 @@ public class User {
     }
 
     public String getFirstName() {
-        return fName;
+        return firstName;
     }
 
     public String getLastName() {
-        return lName;
+        return lastName;
     }
 
     public char getGender() {
         return gender;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String username) {
+        this.userName = username;
     }
 
     public void setPassword(String password) {
@@ -76,11 +78,11 @@ public class User {
     }
 
     public void setFirstName(String fName) {
-        this.fName = fName;
+        this.firstName = fName;
     }
 
     public void setLastName(String lName) {
-        this.lName = lName;
+        this.lastName = lName;
     }
 
     public void setGender(char gender) {
@@ -94,8 +96,32 @@ public class User {
         }
         User rhs = (User) o;
 
-        return (username.equals(rhs.username) && password.equals(rhs.password) &&
-                fName.equals(rhs.fName) && lName.equals(rhs.lName) &&
+        return (userName.equals(rhs.userName) && password.equals(rhs.password) &&
+                firstName.equals(rhs.firstName) && lastName.equals(rhs.lastName) &&
                 email.equals(rhs.email) && gender == rhs.gender);
+    }
+
+    public String getfName() {
+        return firstName;
+    }
+
+    public void setfName(String fName) {
+        this.firstName = fName;
+    }
+
+    public String getlName() {
+        return lastName;
+    }
+
+    public void setlName(String lName) {
+        this.lastName = lName;
+    }
+
+    public String getPersonID() {
+        return personID;
+    }
+
+    public void setPersonID(String personID) {
+        this.personID = personID;
     }
 }

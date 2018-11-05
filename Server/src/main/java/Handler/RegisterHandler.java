@@ -13,10 +13,12 @@ import java.util.logging.Logger;
 
 import DAO.DatabaseException;
 import Model.User;
+import RequestObjects.FillRequest;
 import RequestObjects.RegisterRequest;
 import ResponseObjects.MessageResponse;
 import ResponseObjects.RegisterResponse;
 import Service.AuthorizationService;
+import Service.FillService;
 import Service.RegisterService;
 import Service.InternalServerErrorException;
 import Service.UserNameUnavailableException;
@@ -47,6 +49,7 @@ public class RegisterHandler implements HttpHandler {
                 RegisterRequest registerRequest = gson.fromJson(isr, RegisterRequest.class);
                 RegisterService registerService = new RegisterService();
                 RegisterResponse registerResponse = registerService.run(registerRequest);
+                new FillService().run(new FillRequest(registerRequest.getUserName(), 4));
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 String jsonResponse = gson.toJson(registerResponse);
                 OutputStream respBody = exchange.getResponseBody();

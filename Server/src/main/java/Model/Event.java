@@ -10,48 +10,44 @@ import java.util.UUID;
  */
 public class Event {
 
-    public enum EventType {
-        BIRTH, DEATH, MARRIAGE, BAPTISM, CHRISTENING
-    }
-
-    private String ID;
+    private String eventID;
     private String descendant;
-    private String person;
+    private String personID;
     private double latitude;
     private double longitude;
     private String country;
     private String city;
-    private EventType type;
+    private String eventType;
     private int year;
 
 
     public Event() {
-        this.ID = "";
+        this.eventID = "";
         this.descendant = "";
-        this.person = "";
+        this.personID = "";
         this.latitude = 0;
         this.longitude = 0;
         this.country = "";
         this.city = "";
-        this.type = EventType.BIRTH;
+        this.eventType = "";
         this.year = 0;
     }
 
     public Event(String descendant, String person, double latitude, double longitude, String country,
-                 String city, EventType type, int year) {
-        this.ID = UUID.randomUUID().toString();
+                 String city, String type, int year) {
+        this.eventID = UUID.randomUUID().toString();
         this.descendant = descendant;
-        this.person = person;
+        this.personID = person;
         this.latitude = latitude;
         this.longitude = longitude;
         this.country = country;
         this.city = city;
-        this.type = type;
+        this.eventType = type;
         this.year = year;
     }
 
     public String getID() {
-        return ID;
+        return eventID;
     }
 
     public String getDescendant() {
@@ -59,7 +55,7 @@ public class Event {
     }
 
     public String getPerson() {
-        return person;
+        return personID;
     }
 
     public double getLatitude() {
@@ -78,8 +74,8 @@ public class Event {
         return city;
     }
 
-    public EventType getType() {
-        return type;
+    public String getType() {
+        return eventType;
     }
 
     public int getYear() {
@@ -89,7 +85,7 @@ public class Event {
 
 
     public void setID(String ID) {
-        this.ID = ID;
+        this.eventID = ID;
     }
 
     public void setDescendant(String descendant) {
@@ -97,7 +93,7 @@ public class Event {
     }
 
     public void setPerson(String person) {
-        this.person = person;
+        this.personID = person;
     }
 
     public void setLatitude(double latitude) {
@@ -116,8 +112,8 @@ public class Event {
         this.city = city;
     }
 
-    public void setType(EventType type) {
-        this.type = type;
+    public void setType(String type) {
+        this.eventType = type;
     }
 
     public void setYear(int year) {

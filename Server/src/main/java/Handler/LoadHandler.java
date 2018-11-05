@@ -6,14 +6,16 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.logging.Logger;
 
-import RequestObjects.FillRequest;
+import RequestObjects.LoadRequest;
 import ResponseObjects.MessageResponse;
 import Service.AuthorizationService;
-import Service.FillService;
+import Service.ClearService;
+import Service.LoadService;
 import Service.InternalServerErrorException;
 import Service.InvalidInputException;
 import Service.UserNotFoundException;
@@ -23,7 +25,7 @@ import sun.net.www.protocol.http.HttpURLConnection;
  * Created by jaromwea on 10/26/18.
  */
 
-public class FillHandler implements HttpHandler {
+public class LoadHandler implements HttpHandler {
     private static Logger logger;
 
     static {
@@ -32,26 +34,24 @@ public class FillHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        logger.entering("FillHandler", "handle");
+        logger.entering("LoadHandler", "handle");
+        System.out.println("Entering LoadHandler.handle");
 
         boolean success = false;
         Gson gson = new Gson();
         try {
+            System.out.println("Checking post...");
             if (exchange.getRequestMethod().toUpperCase().equals("POST")) {
-                String path = exchange.getRequestURI().getPath();
-                String input = path.substring(path.indexOf("fill/") + 5);
-                int slash = input.indexOf('/');
-                int generations = 4;
-                String userName = input;
-                if (slash >= 0) {
-                    generations = Integer.parseInt(input.substring(slash + 1));
-                    userName = input.substring(0, slash);
-                }
-                System.out.println(userName);
-                System.out.println(generations);
-                FillRequest fillRequest = new FillRequest(userName, generations);
-                FillService fillService = new FillService();
-                MessageResponse messageResponse = fillService.run(fillRequest);
+                System.out.println("Post good");
+                InputStreamReader reader = new InputStreamReader(exchange.getRequestBody());
+                System.out.println("Reading json...");
+                LoadRequest loadRequest = gson.fromJson(reader, LoadRequest.class);
+                System.out.println("json good");
+                LoadService loadService = new LoadService();
+                System.out.println("Clearing in preparation...");
+                new ClearService().run();
+                System.out.println("Clear successful");
+                MessageResponse messageResponse = loadService.run(loadRequest);
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 String jsonResponse = gson.toJson(messageResponse);
                 OutputStream respBody = exchange.getResponseBody();
@@ -60,11 +60,11 @@ public class FillHandler implements HttpHandler {
                 writer.flush();
                 respBody.close();
                 success = true;
-                System.out.println("Successfully filled");
+                System.out.println("Successfully loaded");
             }
             if (!success) {
-                logger.fine("Failed to fill");
-                System.out.println("Failed to fill");
+                logger.fine("Failed to load");
+                System.out.println("Failed to load");
                 exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
                 MessageResponse messageResponse = new MessageResponse("Improper input");
                 String jsonResponse = gson.toJson(messageResponse);
@@ -76,35 +76,34 @@ public class FillHandler implements HttpHandler {
             }
         }
         catch (IOException e) {
-            logger.severe("IOException in FillHandler.handle: " + e.getMessage());
-            System.out.println("IOException in FillHandler.handle: " + e.getMessage());
+            logger.severe("IOException in LoadHandler.handle: " + e.getMessage());
+            System.out.println("IOException in LoadHandler.handle: " + e.getMessage());
             e.printStackTrace();
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
         }
         catch (InternalServerErrorException e) {
-            logger.severe("InternalServerErrorException in FillHandler.handle: " + e.getMessage());
-            System.out.println("InternalServerErrorException in FillHandler.handle: " + e.getMessage());
+            logger.severe("InternalServerErrorException in LoadHandler.handle: " + e.getMessage());
+            System.out.println("InternalServerErrorException in LoadHandler.handle: " + e.getMessage());
             e.printStackTrace();
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
             exchange.getResponseBody().close();
         }
-        catch (UserNotFoundException e) {
-            logger.severe("UserNotFoundException in FillHandler.handle: " + e.getMessage());
-            System.out.println("UserNotFoundException in FillHandler.handle: " + e.getMessage());
-            e.printStackTrace();
+        catch (Exception e) {
+            logger.fine("Failed to load");
+            System.out.println("Failed to load");
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+            MessageResponse messageResponse = new MessageResponse("Improper input");
+            String jsonResponse = gson.toJson(messageResponse);
             OutputStream respBody = exchange.getResponseBody();
             OutputStreamWriter writer = new OutputStreamWriter(respBody);
-            MessageResponse messageResponse = new MessageResponse("User not found");
-            String jsonResponse = gson.toJson(messageResponse);
             writer.write(jsonResponse);
             writer.flush();
-            exchange.getResponseBody().close();
+            respBody.close();
         }
-        catch (InvalidInputException e) {
-            logger.severe("InvalidInputException in FillHandler.handle: " + e.getMessage());
-            System.out.println("InvalidInputException in FillHandler.handle: " + e.getMessage());
+        /*catch (InvalidInputException e) {
+            logger.severe("InvalidInputException in LoadHandler.handle: " + e.getMessage());
+            System.out.println("InvalidInputException in LoadHandler.handle: " + e.getMessage());
             e.printStackTrace();
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
             OutputStream respBody = exchange.getResponseBody();
@@ -114,12 +113,9 @@ public class FillHandler implements HttpHandler {
             writer.write(jsonResponse);
             writer.flush();
             exchange.getResponseBody().close();
-        }
-        catch (Error e) {
-            e.printStackTrace();
-        }
+        }*/
         finally {
-            logger.exiting("FillHandler", "handle");
+            logger.exiting("LoadHandler", "handle");
         }
     }
 }

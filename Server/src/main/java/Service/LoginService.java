@@ -40,7 +40,7 @@ public class LoginService {
             TokenDAO tokenDAO = db.getTokenDAO();
             tokenDAO.create(token);
             PersonDAO personDAO = db.getPersonDAO();
-            Person person = personDAO.read(user.getUsername());
+            Person person = personDAO.read(user.getUserName());
             db.closeConnection(true);
             db = null;
             return new LoginResponse(token.getCode(), loginRequest.getUserName(), person.getID());

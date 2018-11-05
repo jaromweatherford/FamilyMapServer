@@ -38,17 +38,17 @@ public class RegisterService {
             }
             user = generateUser(registerRequest);
             userDAO.create(user);
-            AuthToken token = new AuthToken(user.getUsername());
+            AuthToken token = new AuthToken(user.getUserName());
             TokenDAO tokenDAO = db.getTokenDAO();
             tokenDAO.create(token);
-            Person person = new Person(user.getUsername(), user.getFirstName(), user.getLastName(),
-                                        user.getGender());
-            person.setID(user.getUsername());
+            Person person = new Person(user.getUserName(), user.getFirstName(), user.getLastName(),
+                                        Character.toString(user.getGender()));
+            person.setID(user.getUserName());
             PersonDAO personDAO = db.getPersonDAO();
             personDAO.create(person);
             db.closeConnection(true);
             db = null;
-            return new RegisterResponse(token.getCode(), user.getUsername(), person.getID());
+            return new RegisterResponse(token.getCode(), user.getUserName(), person.getID());
         }
         catch (DatabaseException e) {
             throw new InternalServerErrorException("Database failure");
@@ -61,12 +61,13 @@ public class RegisterService {
 
     private User generateUser(RegisterRequest rr) {
         User user = new User();
-        user.setUsername(rr.getUserName());
+        user.setUserName(rr.getUserName());
         user.setPassword(rr.getPassword());
         user.setEmail(rr.getEmail());
         user.setFirstName(rr.getFirstName());
         user.setLastName(rr.getLastName());
         user.setGender(rr.getGender());
+        user.setPersonID(rr.getUserName());
         return user;
     }
 }

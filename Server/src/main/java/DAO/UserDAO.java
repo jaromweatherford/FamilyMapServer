@@ -30,16 +30,17 @@ public class UserDAO {
         if (connection == null) {
             return false;
         }
-        String sql = "INSERT INTO Users(UserName, Password, Email, FirstName, LastName, Gender) " +
-                "VALUES(?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Users(UserName, Password, Email, FirstName, LastName, Gender, PersonID) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, user.getUsername());
+            statement.setString(1, user.getUserName());
             statement.setString(2, user.getPassword());
             statement.setString(3, user.getEmail());
             statement.setString(4, user.getFirstName());
             statement.setString(5, user.getLastName());
             statement.setString(6, Character.toString(user.getGender()));
+            statement.setString(7, user.getPersonID());
             statement.executeUpdate();
         }
         catch (SQLException e) {
@@ -108,7 +109,7 @@ public class UserDAO {
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, user.getUsername());
+            statement.setString(1, user.getUserName());
             statement.executeUpdate();
         }
         catch (SQLException e) {
@@ -120,12 +121,13 @@ public class UserDAO {
 
     private void readUser(ResultSet rs, User user) {
         try {
-            user.setUsername(rs.getString("UserName"));
+            user.setUserName(rs.getString("UserName"));
             user.setPassword(rs.getString("Password"));
             user.setEmail(rs.getString("Email"));
             user.setFirstName(rs.getString("FirstName"));
             user.setLastName(rs.getString("LastName"));
             user.setGender(rs.getString("Gender").charAt(0));
+            user.setPersonID(rs.getString("PersonID"));
         }
         catch (SQLException e) {
             e.printStackTrace();

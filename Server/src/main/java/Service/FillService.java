@@ -54,7 +54,7 @@ public class FillService {
             List<Person> currentGen = new ArrayList<>();
 
             for (Person person: persons) {
-                if (!person.getID().equals(user.getUsername())) {
+                if (!person.getID().equals(user.getPersonID())) {
                     personDAO.destroy(person);
                 }
                 else {
@@ -62,7 +62,7 @@ public class FillService {
                 }
             }
             for (Event event: events) {
-                if (!event.getPerson().equals(user.getUsername())) {
+                if (!event.getPerson().equals(user.getUserName())) {
                     eventDAO.destroy(event);
                 }
             }
@@ -105,8 +105,8 @@ public class FillService {
         for (int p = 0; p < 2; ++p) {
             String firstName = (p == 0 ? "Father" : "Mother");
             String lastName = "McPerson";
-            char gender = (p == 0 ? 'm' : 'f');
-            Person parent = new Person(user.getUsername(), firstName, lastName, gender);
+            String gender = (p == 0 ? "m" : "f");
+            Person parent = new Person(user.getUserName(), firstName, lastName, gender);
             personDAO.create(parent);
             result.add(parent);
             createEvents(parent, user, eventDAO);
@@ -122,21 +122,21 @@ public class FillService {
 
     private void createEvents(Person person, User user, EventDAO eventDAO) {
         for (int e = 0; e < 4; ++e) {
-            Event.EventType type;
+            String type;
             switch (e) {
                 case(0):
-                    type = Event.EventType.BIRTH;
+                    type = "BIRTH";
                     break;
                 case(1):
-                    type = Event.EventType.BAPTISM;
+                    type = "BAPTISM";
                     break;
                 case(3):
-                    type = Event.EventType.DEATH;
+                    type = "DEATH";
                     break;
                 default:
-                    type = Event.EventType.MARRIAGE;
+                    type = "MARRIAGE";
             }
-            Event event = new Event(user.getUsername(), person.getID(), 0,
+            Event event = new Event(user.getUserName(), person.getID(), 0,
                     0, "", "", type, 0);
             eventDAO.create(event);
         }

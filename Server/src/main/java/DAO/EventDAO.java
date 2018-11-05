@@ -118,7 +118,7 @@ public class EventDAO {
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, user.getUsername());
+            statement.setString(1, user.getUserName());
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 Event event = new Event();
@@ -162,22 +162,7 @@ public class EventDAO {
             event.setLongitude(rs.getDouble("Longitude"));
             event.setCountry(rs.getString("Country"));
             event.setCity(rs.getString("City"));
-            String type = rs.getString("EventType");
-            if (type.equals("BIRTH")) {
-                event.setType(Event.EventType.BIRTH);
-            }
-            else if (type.equals("DEATH")) {
-                event.setType(Event.EventType.DEATH);
-            }
-            else if (type.equals("MARRIAGE")) {
-                event.setType(Event.EventType.MARRIAGE);
-            }
-            else if (type.equals("BAPTISM")) {
-                event.setType(Event.EventType.BAPTISM);
-            }
-            else if (type.equals("CHRISTENING")) {
-                event.setType(Event.EventType.CHRISTENING);
-            }
+            event.setType(rs.getString("EventType"));
             event.setYear(rs.getInt("Year"));
         }
         catch (SQLException e) {

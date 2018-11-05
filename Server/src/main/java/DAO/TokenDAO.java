@@ -83,7 +83,7 @@ public class TokenDAO {
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, user.getUsername());
+            statement.setString(1, user.getUserName());
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 AuthToken token = new AuthToken();
