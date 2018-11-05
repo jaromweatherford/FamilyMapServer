@@ -87,7 +87,7 @@ public class LoginHandler implements HttpHandler {
         catch (UserNotFoundException e) {
             System.out.println("Username was not found");
             exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-            MessageResponse message = new MessageResponse("Username unavailable");
+            MessageResponse message = new MessageResponse("User not found");
             String jsonResponse = gson.toJson(message);
             OutputStream respBody = exchange.getResponseBody();
             OutputStreamWriter writer = new OutputStreamWriter(respBody);

@@ -100,6 +100,14 @@ public class RegisterHandler implements HttpHandler {
         }
         catch (Exception e) {
             e.printStackTrace();
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+            MessageResponse message = new MessageResponse("Invalid input");
+            String jsonResponse = gson.toJson(message);
+            OutputStream respBody = exchange.getResponseBody();
+            OutputStreamWriter writer = new OutputStreamWriter(respBody);
+            writer.write(jsonResponse);
+            writer.flush();
+            respBody.close();
         }
         finally {
             System.out.println("Exiting RegisterHandler.handle");

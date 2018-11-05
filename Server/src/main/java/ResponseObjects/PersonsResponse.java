@@ -1,6 +1,7 @@
 package ResponseObjects;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import Model.Person;
 
@@ -10,13 +11,20 @@ import Model.Person;
  * @version 0.0
  */
 public class PersonsResponse {
-    private ArrayList<Person> people;
+    private Person[] people;
 
-    public PersonsResponse(ArrayList<Person> people) {
+    public PersonsResponse(Person[] people) {
         this.people = people;
     }
 
-    public ArrayList<Person> getPeople() {
+    public PersonsResponse(List<Person> people) {
+        this.people = new Person[people.size()];
+        for (int i = 0; i < people.size(); ++i) {
+            this.people[i] = people.get(i);
+        }
+    }
+
+    public Person[] getPeople() {
         return people;
     }
 }

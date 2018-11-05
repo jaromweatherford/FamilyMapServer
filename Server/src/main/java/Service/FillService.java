@@ -67,19 +67,21 @@ public class FillService {
                 }
             }
 
+            int peopleAdded = 0;
+            int eventsAdded = 0;
             for (int i = 0; i < fillRequest.getGenerations(); ++i) {
                 List<Person> nextGen = new ArrayList<>();
                 for (Person person: currentGen) {
-                    for (int p = 0; p < 2; ++p) {
-                        nextGen.addAll(createParents(person, user, eventDAO, personDAO));
-                    }
+                    List<Person> parents = createParents(person, user, eventDAO, personDAO);
+                    peopleAdded += 2;
+                    eventsAdded += 8;
+                    nextGen.addAll(parents);
                 }
+                currentGen = nextGen;
             }
 
             db.closeConnection(true);
             db = null;
-            int peopleAdded = (int)Math.pow(2, fillRequest.getGenerations() + 1) - 2;
-            int eventsAdded = peopleAdded * 4;
             String message = "Successfully added " + peopleAdded + " people and "
                     + eventsAdded + " events to the database";
             return new MessageResponse(message);
@@ -107,16 +109,22 @@ public class FillService {
             String lastName = "McPerson";
             String gender = (p == 0 ? "m" : "f");
             Person parent = new Person(user.getUserName(), firstName, lastName, gender);
-            personDAO.create(parent);
-            result.add(parent);
-            createEvents(parent, user, eventDAO);
             if (p == 0) {
                 person.setFatherID(parent.getID());
             }
             else {
                 person.setMotherID(parent.getID());
             }
+            result.add(parent);
         }
+        result.get(0).setSpouseID(result.get(1).getID());
+        result.get(1).setSpouseID(result.get(0).getID());
+        personDAO.destroy(person);
+        personDAO.create(person);
+        personDAO.create(result.get(0));
+        personDAO.create(result.get(1));
+        createEvents(result.get(0), user, eventDAO);
+        createEvents(result.get(1), user, eventDAO);
         return result;
     }
 

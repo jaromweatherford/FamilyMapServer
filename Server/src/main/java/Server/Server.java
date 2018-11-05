@@ -13,6 +13,7 @@ import Handler.FillHandler;
 import Handler.LoadHandler;
 import Handler.LoginHandler;
 import Handler.PersonHandler;
+import Handler.PersonsHandler;
 import Handler.RegisterHandler;
 
 /**
@@ -57,6 +58,7 @@ public class Server {
         server.createContext("/fill", new FillHandler());
         server.createContext("/load", new LoadHandler());
         server.createContext("/person/", new PersonHandler());
+        server.createContext("/person", new PersonsHandler());
         server.createContext("/event/", new EventHandler());
         server.createContext("/clear", new ClearHandler());
         server.createContext("/", new FileHandler());
