@@ -36,11 +36,15 @@ public class LoginService {
                 db.closeConnection(false);
                 throw new UserNotFoundException();
             }
+            if (!user.getPassword().equals(loginRequest.getPassword())) {
+                throw new InvalidInputException();
+            }
             AuthToken token = new AuthToken(loginRequest.getUserName());
             TokenDAO tokenDAO = db.getTokenDAO();
             tokenDAO.create(token);
             PersonDAO personDAO = db.getPersonDAO();
-            Person person = personDAO.read(user.getUserName());
+            Person person = personDAO.read(user.getPersonID());
+
             db.closeConnection(true);
             db = null;
             return new LoginResponse(token.getCode(), loginRequest.getUserName(), person.getID());

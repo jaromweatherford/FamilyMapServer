@@ -28,6 +28,7 @@ public class PersonService {
         try {
             db = new Database();
             db.openConnection();
+
             TokenDAO tokenDAO = db.getTokenDAO();
             AuthToken token = tokenDAO.read(personRequest.getAuthToken());
             PersonDAO personDAO = db.getPersonDAO();
@@ -42,6 +43,7 @@ public class PersonService {
                 throw new PersonNotFoundException();
             }
             PersonResponse personResponse = new PersonResponse(person);
+
             db.closeConnection(true);
             db = null;
             return personResponse;

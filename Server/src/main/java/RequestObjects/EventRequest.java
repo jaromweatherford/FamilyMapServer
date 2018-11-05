@@ -9,9 +9,11 @@ import java.util.UUID;
  */
 public class EventRequest {
     private String eventID;
+    private String authToken;
 
-    public EventRequest(String eventID) {
+    public EventRequest(String eventID, String authToken) {
         this.eventID = eventID;
+        this.authToken = authToken;
     }
 
     public String getEventID() {
@@ -20,5 +22,13 @@ public class EventRequest {
 
     public void setEventID(String eventID) {
         this.eventID = eventID;
+    }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 }

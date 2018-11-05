@@ -54,12 +54,7 @@ public class FillService {
             List<Person> currentGen = new ArrayList<>();
 
             for (Person person: persons) {
-                if (!person.getID().equals(user.getPersonID())) {
-                    personDAO.destroy(person);
-                }
-                else {
-                    currentGen.add(person);
-                }
+                personDAO.destroy(person);
             }
             for (Event event: events) {
                 if (!event.getPerson().equals(user.getUserName())) {
@@ -67,17 +62,31 @@ public class FillService {
                 }
             }
 
-            int peopleAdded = 0;
-            int eventsAdded = 0;
+            Person root = new Person(user.getUserName(), user.getFirstName(), user.getLastName(),
+                    Character.toString(user.getGender()));
+            root.setID(user.getUserName());
+            currentGen.add(root);
+            personDAO.create(root);
+
+            user.setPersonID(root.getID());
+            userDAO.destroy(user);
+            userDAO.create(user);
+
+            int birthYear = 1994;
+            createEvents(root, birthYear, user, eventDAO, false);
+
+            int peopleAdded = 1;
+            int eventsAdded = 3;
             for (int i = 0; i < fillRequest.getGenerations(); ++i) {
                 List<Person> nextGen = new ArrayList<>();
                 for (Person person: currentGen) {
-                    List<Person> parents = createParents(person, user, eventDAO, personDAO);
+                    List<Person> parents = createParents(person, birthYear, user, eventDAO, personDAO);
                     peopleAdded += 2;
                     eventsAdded += 8;
                     nextGen.addAll(parents);
                 }
                 currentGen = nextGen;
+                birthYear -= 35;
             }
 
             db.closeConnection(true);
@@ -101,7 +110,7 @@ public class FillService {
         return new MessageResponse("If you can read this, something really weird happened");
     }
 
-    private List<Person> createParents(Person person, User user, EventDAO eventDAO,
+    private List<Person> createParents(Person person, int birthYear, User user, EventDAO eventDAO,
                                        PersonDAO personDAO) throws InvalidInputException {
         List<Person> result = new ArrayList<>();
         for (int p = 0; p < 2; ++p) {
@@ -123,30 +132,46 @@ public class FillService {
         personDAO.create(person);
         personDAO.create(result.get(0));
         personDAO.create(result.get(1));
-        createEvents(result.get(0), user, eventDAO);
-        createEvents(result.get(1), user, eventDAO);
+        createEvents(result.get(0), birthYear - 30, user, eventDAO, true);
+        createEvents(result.get(1), birthYear - 30, user, eventDAO, true);
         return result;
     }
 
-    private void createEvents(Person person, User user, EventDAO eventDAO) {
+    private void createEvents(Person person, int birthYear, User user, EventDAO eventDAO, boolean dead) {
+        int random = (int)Math.floor(9 * Math.random());
         for (int e = 0; e < 4; ++e) {
+            int year = birthYear;
             String type;
             switch (e) {
                 case(0):
                     type = "BIRTH";
+                    year += random;
                     break;
                 case(1):
                     type = "BAPTISM";
+                    if (Math.random() < 0.9) {
+                        year += 8 + random;
+                    }
+                    else {
+                        year += (32 * Math.random()) + 40 + random;
+                    }
                     break;
                 case(3):
                     type = "DEATH";
+                    year += (20 * Math.random()) + 80;
                     break;
                 default:
                     type = "MARRIAGE";
+                    year += 26;
             }
-            Event event = new Event(user.getUserName(), person.getID(), 0,
-                    0, "", "", type, 0);
-            eventDAO.create(event);
+            if (year > 2018) {
+                year = 2018;
+            }
+            Event event = new Event(user.getUserName(), person.getID(), 40.7128,
+                    74.0060, "USA", "New York", type, year);
+            if (dead || !type.equals("DEATH")) {
+                eventDAO.create(event);
+            }
         }
     }
 }

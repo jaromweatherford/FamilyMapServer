@@ -10,13 +10,16 @@ import Model.Event;
  * @version 0.0
  */
 public class EventsResponse {
-    private ArrayList<Event> events;
+    private Event[] events;
 
     public EventsResponse(ArrayList<Event> events) {
-        this.events = events;
+        this.events = new Event[events.size()];
+        for (int i = 0; i < events.size(); ++i) {
+            this.events[i] = events.get(i);
+        }
     }
 
-    public ArrayList<Event> getEvents() {
+    public Event[] getEvents() {
         return events;
     }
 }

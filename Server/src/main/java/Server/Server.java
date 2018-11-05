@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import Handler.ClearHandler;
 import Handler.EventHandler;
+import Handler.EventsHandler;
 import Handler.FileHandler;
 import Handler.FillHandler;
 import Handler.LoadHandler;
@@ -60,6 +61,7 @@ public class Server {
         server.createContext("/person/", new PersonHandler());
         server.createContext("/person", new PersonsHandler());
         server.createContext("/event/", new EventHandler());
+        server.createContext("/event", new EventsHandler());
         server.createContext("/clear", new ClearHandler());
         server.createContext("/", new FileHandler());
 

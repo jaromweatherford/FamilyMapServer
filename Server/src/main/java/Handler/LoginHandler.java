@@ -17,6 +17,7 @@ import RequestObjects.LoginRequest;
 import ResponseObjects.MessageResponse;
 import ResponseObjects.LoginResponse;
 import Service.AuthorizationService;
+import Service.InvalidInputException;
 import Service.LoginService;
 import Service.InternalServerErrorException;
 import Service.UserNameUnavailableException;
@@ -95,8 +96,26 @@ public class LoginHandler implements HttpHandler {
             writer.flush();
             respBody.close();
         }
+        catch (InvalidInputException e) {
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+            MessageResponse message = new MessageResponse("Wrong password");
+            String jsonResponse = gson.toJson(message);
+            OutputStream respBody = exchange.getResponseBody();
+            OutputStreamWriter writer = new OutputStreamWriter(respBody);
+            writer.write(jsonResponse);
+            writer.flush();
+            respBody.close();
+        }
         catch (Exception e) {
             e.printStackTrace();
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_SERVER_ERROR, 0);
+            MessageResponse message = new MessageResponse("User not found");
+            String jsonResponse = gson.toJson(message);
+            OutputStream respBody = exchange.getResponseBody();
+            OutputStreamWriter writer = new OutputStreamWriter(respBody);
+            writer.write(jsonResponse);
+            writer.flush();
+            respBody.close();
         }
         finally {
             System.out.println("Exiting LoginHandler.handle");

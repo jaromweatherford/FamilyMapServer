@@ -3,6 +3,8 @@ package Service;
 import DAO.Database;
 import DAO.DatabaseException;
 import DAO.EventDAO;
+import DAO.TokenDAO;
+import Model.AuthToken;
 import Model.Event;
 import RequestObjects.EventRequest;
 import ResponseObjects.EventResponse;
@@ -26,12 +28,22 @@ public class EventService {
         try {
             db = new Database();
             db.openConnection();
+
+            TokenDAO tokenDAO = db.getTokenDAO();
+            AuthToken token = tokenDAO.read(eventRequest.getAuthToken());
             EventDAO eventDAO = db.getEventDAO();
             Event event = eventDAO.read(eventRequest.getEventID());
             if (event == null) {
                 throw new EventNotFoundException();
             }
+            if (token == null) {
+                throw new InternalServerErrorException("Couldn't find the token");
+            }
+            if (!token.getUserName().equals(event.getDescendant())) {
+                throw new EventNotFoundException();
+            }
             EventResponse eventResponse = new EventResponse(event);
+
             db.closeConnection(true);
             db = null;
             return eventResponse;
