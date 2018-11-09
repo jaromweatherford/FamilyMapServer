@@ -11,7 +11,8 @@ import java.sql.Statement;
  * @version 0.0
  */
 public class Database {
-    private Connection connection;
+    private static Database _instance;
+    private Connection connection = null;
     private UserDAO userDAO;
     private PersonDAO personDAO;
     private EventDAO eventDAO;
@@ -27,16 +28,29 @@ public class Database {
         }
     }
 
+    public static Database instance() throws DatabaseException {
+        if (_instance == null) {
+            _instance = new Database();
+            _instance.openConnection();
+        }
+        return _instance;
+    }
+
+    private Database() {
+    }
+
     /** openConnection prepares the database to read or make changes
      *
      */
-    public void openConnection() throws DatabaseException {
+    private void openConnection() throws DatabaseException {
         try {
             final String CONNECTION_URL = "jdbc:sqlite:FamilyMapServer.db";
 
-            connection = DriverManager.getConnection(CONNECTION_URL);
+            if (connection == null) {
+                connection = DriverManager.getConnection(CONNECTION_URL);
 
-            connection.setAutoCommit(false);
+                connection.setAutoCommit(false);
+            }
 
             userDAO = new UserDAO(connection);
             personDAO = new PersonDAO(connection);
@@ -44,14 +58,34 @@ public class Database {
             tokenDAO = new TokenDAO(connection);
         }
         catch (SQLException e) {
+            e.printStackTrace();
             throw new DatabaseException("openConnectionFailed");
+        }
+    }
+
+    /** commits or rolls back
+     *
+     */
+    public void commit(boolean commit) throws DatabaseException {
+        try {
+            if (connection != null) {
+                if (commit) {
+                    connection.commit();
+                } else {
+                    connection.rollback();
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw new DatabaseException("closeConnection failed");
         }
     }
 
     /** closeConnection closes the connection
      *
      */
-    public void closeConnection(boolean commit) throws DatabaseException {
+    private void closeConnection(boolean commit) throws DatabaseException {
         try {
             if (connection != null) {
                 if (commit) {
@@ -62,14 +96,20 @@ public class Database {
                 connection.close();
                 connection = null;
             }
-
-            userDAO = null;
-            personDAO = null;
-            eventDAO = null;
-            tokenDAO = null;
         }
         catch (SQLException e) {
+            e.printStackTrace();
             throw new DatabaseException("closeConnection failed");
+        }
+    }
+
+    @Override
+    public void finalize() {
+        try {
+            closeConnection(false);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

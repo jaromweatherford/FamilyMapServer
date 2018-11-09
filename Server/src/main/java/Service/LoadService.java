@@ -31,8 +31,9 @@ public class LoadService {
         Database db = null;
         MessageResponse response = new MessageResponse("Failed to load");
         try {
-            db = new Database();
-            db.openConnection();
+            new ClearService().run();
+
+            db = Database.instance();
 
             UserDAO userDAO = db.getUserDAO();
             PersonDAO personDAO = db.getPersonDAO();
@@ -69,21 +70,24 @@ public class LoadService {
             sb.append(" persons, and ");
             sb.append(events.size());
             sb.append(" events to the database");
-            System.out.println(sb.toString());
             response = new MessageResponse(sb.toString());
-            db.closeConnection(true);
+            db.commit(true);
             db = null;
         }
         catch (DatabaseException e) {
-            try {
-                if (db != null) {
-                    db.closeConnection(false);
+            e.printStackTrace();
+            throw new InternalServerErrorException("Database failed");
+        }
+        finally {
+            if (db != null) {
+                try {
+                    db.commit(false);
                     db = null;
-                    return new MessageResponse("Failed to fill the database");
                 }
-            }
-            catch (DatabaseException de) {
-                throw new InternalServerErrorException("FAILED TO CLOSE CONNECTION!");
+                catch (DatabaseException e) {
+                    System.out.println("FAILED TO CLOSE CONNECTION");
+                    throw new InternalServerErrorException("FAILED TO CLOSE CONNECTION!");
+                }
             }
         }
         return response;

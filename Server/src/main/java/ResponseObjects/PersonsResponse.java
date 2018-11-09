@@ -24,6 +24,10 @@ public class PersonsResponse {
         }
     }
 
+    public int size() {
+        return people.length;
+    }
+
     public Person[] getPeople() {
         return people;
     }

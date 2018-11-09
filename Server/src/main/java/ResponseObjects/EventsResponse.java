@@ -22,4 +22,8 @@ public class EventsResponse {
     public Event[] getEvents() {
         return events;
     }
+
+    public int size() {
+        return events.length;
+    }
 }

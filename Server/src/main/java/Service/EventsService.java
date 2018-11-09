@@ -29,11 +29,13 @@ public class EventsService {
                                                                     InternalServerErrorException {
         Database db = null;
         try {
-            db = new Database();
-            db.openConnection();
+            db = Database.instance();
 
             TokenDAO tokenDAO = db.getTokenDAO();
             AuthToken token = tokenDAO.read(eventsRequest.getTokenCode());
+            if (token == null) {
+                throw new UserNotFoundException();
+            }
             UserDAO userDAO = db.getUserDAO();
             User user = userDAO.read(token.getUserName());
             if (user == null) {
@@ -42,23 +44,25 @@ public class EventsService {
             EventDAO eventDAO = db.getEventDAO();
             EventsResponse eventsResponse = new EventsResponse(eventDAO.read(user));
 
-            db.closeConnection(true);
+            db.commit(true);
             db = null;
             return eventsResponse;
         }
         catch (DatabaseException e) {
             e.printStackTrace();
-            try {
-                if (db != null) {
-                    db.closeConnection(false);
+            throw new InternalServerErrorException("Database failed");
+        }
+        finally {
+            if (db != null) {
+                try {
+                    db.commit(false);
                     db = null;
                 }
+                catch (DatabaseException e) {
+                    System.out.println("FAILED TO CLOSE CONNECTION");
+                    throw new InternalServerErrorException("FAILED TO CLOSE CONNECTION!");
+                }
             }
-            catch (DatabaseException de) {
-                de.printStackTrace();
-                throw new InternalServerErrorException("FAILED TO CLOSE CONNECTION!");
-            }
-            throw new InternalServerErrorException("Database failed");
         }
     }
 }

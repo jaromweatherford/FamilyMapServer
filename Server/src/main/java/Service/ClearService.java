@@ -33,8 +33,8 @@ public class ClearService {
     public MessageResponse run()  throws InternalServerErrorException {
         Database db = null;
         try {
-            db = new Database();
-            db.openConnection();
+            db = Database.instance();
+
             UserDAO userDAO = db.getUserDAO();
             PersonDAO personDAO = db.getPersonDAO();
             TokenDAO tokenDAO = db.getTokenDAO();
@@ -60,18 +60,18 @@ public class ClearService {
             for (User user: userList) {
                 userDAO.destroy(user);
             }
-            db.closeConnection(true);
+            db.commit(true);
             db = null;
             return new MessageResponse("Successfully cleared");
         }
         catch (DatabaseException e) {
             e.printStackTrace();
-            throw new InternalServerErrorException("Internal server errors prevented clearing");
+            throw new InternalServerErrorException("Database failed");
         }
         finally {
             if (db != null) {
                 try {
-                    db.closeConnection(false);
+                    db.commit(false);
                     db = null;
                 }
                 catch (DatabaseException e) {

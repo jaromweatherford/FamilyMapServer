@@ -26,8 +26,7 @@ public class PersonService {
                                                                     InternalServerErrorException {
         Database db = null;
         try {
-            db = new Database();
-            db.openConnection();
+            db = Database.instance();
 
             TokenDAO tokenDAO = db.getTokenDAO();
             AuthToken token = tokenDAO.read(personRequest.getAuthToken());
@@ -44,23 +43,25 @@ public class PersonService {
             }
             PersonResponse personResponse = new PersonResponse(person);
 
-            db.closeConnection(true);
+            db.commit(true);
             db = null;
             return personResponse;
         }
         catch (DatabaseException e) {
             e.printStackTrace();
-            try {
-                if (db != null) {
-                    db.closeConnection(false);
+            throw new InternalServerErrorException("Database failed");
+        }
+        finally {
+            if (db != null) {
+                try {
+                    db.commit(false);
                     db = null;
                 }
+                catch (DatabaseException e) {
+                    System.out.println("FAILED TO CLOSE CONNECTION");
+                    throw new InternalServerErrorException("FAILED TO CLOSE CONNECTION!");
+                }
             }
-            catch (DatabaseException de) {
-                de.printStackTrace();
-                throw new InternalServerErrorException("FAILED TO CLOSE CONNECTION!");
-            }
-            throw new InternalServerErrorException("Database failed");
         }
     }
 

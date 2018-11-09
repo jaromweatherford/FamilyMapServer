@@ -3,6 +3,7 @@ package Service;
 import DAO.Database;
 import DAO.DatabaseException;
 import DAO.TokenDAO;
+import DAO.UserDAO;
 import Model.AuthToken;
 
 /**
@@ -10,48 +11,70 @@ import Model.AuthToken;
  */
 
 public class AuthorizationService {
-    public boolean verifyAuthorization(String authToken) throws DatabaseException {
+    public boolean verifyAuthorization(String authToken) throws InternalServerErrorException {
         Database db = null;
         AuthToken token = null;
         try {
-            db = new Database();
-            db.openConnection();
+            db = Database.instance();
+
             TokenDAO tokenDAO = db.getTokenDAO();
             token = tokenDAO.read(authToken);
-            db.closeConnection(true);
+            if (token == null) {
+                return false;
+            }
+
+            db.commit(true);
             db = null;
+        }
+        catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new InternalServerErrorException("Database failed");
         }
         finally {
             if (db != null) {
-                db.closeConnection(false);
-                db = null;
+                try {
+                    db.commit(false);
+                    db = null;
+                }
+                catch (DatabaseException e) {
+                    System.out.println("FAILED TO CLOSE CONNECTION");
+                    throw new InternalServerErrorException("FAILED TO CLOSE CONNECTION!");
+                }
             }
-        }
-        if (token == null) {
-            return false;
         }
         return true;
     }
 
-    public boolean verifyAuthorization(String userName, String authToken) throws DatabaseException {
+    public boolean verifyAuthorization(String userName, String authToken) throws InternalServerErrorException {
         Database db = null;
         AuthToken token = null;
         try {
-            db = new Database();
-            db.openConnection();
+            db = Database.instance();
+
             TokenDAO tokenDAO = db.getTokenDAO();
             token = tokenDAO.read(authToken);
-            db.closeConnection(true);
+            if (token == null || !token.getUserName().equals(userName)) {
+                return false;
+            }
+
+            db.commit(true);
             db = null;
+        }
+        catch (DatabaseException e) {
+            e.printStackTrace();
+            throw new InternalServerErrorException("Database failed");
         }
         finally {
             if (db != null) {
-                db.closeConnection(false);
-                db = null;
+                try {
+                    db.commit(false);
+                    db = null;
+                }
+                catch (DatabaseException e) {
+                    System.out.println("FAILED TO CLOSE CONNECTION");
+                    throw new InternalServerErrorException("FAILED TO CLOSE CONNECTION!");
+                }
             }
-        }
-        if (token == null || !token.getUserName().equals(userName)) {
-            return false;
         }
         return true;
     }

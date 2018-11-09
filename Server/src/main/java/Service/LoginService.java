@@ -28,12 +28,12 @@ public class LoginService {
                                                         InvalidInputException {
         Database db = null;
         try {
-            db = new Database();
-            db.openConnection();
+            db = Database.instance();
+
             UserDAO userDAO = db.getUserDAO();
             User user = userDAO.read(loginRequest.getUserName());
             if (user == null) {
-                db.closeConnection(false);
+                db.commit(false);
                 throw new UserNotFoundException();
             }
             if (!user.getPassword().equals(loginRequest.getPassword())) {
@@ -45,20 +45,22 @@ public class LoginService {
             PersonDAO personDAO = db.getPersonDAO();
             Person person = personDAO.read(user.getPersonID());
 
-            db.closeConnection(true);
+            db.commit(true);
             db = null;
             return new LoginResponse(token.getCode(), loginRequest.getUserName(), person.getID());
         }
         catch (DatabaseException e) {
-            throw new InternalServerErrorException("Database failure");
+            e.printStackTrace();
+            throw new InternalServerErrorException("Database failed");
         }
         finally {
             if (db != null) {
                 try {
-                    db.closeConnection(false);
+                    db.commit(false);
                     db = null;
                 }
                 catch (DatabaseException e) {
+                    System.out.println("FAILED TO CLOSE CONNECTION");
                     throw new InternalServerErrorException("FAILED TO CLOSE CONNECTION!");
                 }
             }

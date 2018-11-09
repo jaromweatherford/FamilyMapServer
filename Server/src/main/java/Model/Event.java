@@ -119,4 +119,18 @@ public class Event {
     public void setYear(int year) {
         this.year = year;
     }
+
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (!this.getClass().equals(o.getClass())) {
+            return false;
+        }
+        Event rhs = (Event) o;
+        return (eventID.equals(rhs.eventID) && descendant.equals(rhs.descendant) &&
+        personID.equals(rhs.personID) && latitude == rhs.latitude && longitude == rhs.longitude &&
+        country.equals(rhs.country) && city.equals(rhs.city) && eventType.equals(rhs.eventType) &&
+        year == rhs.year);
+    }
 }

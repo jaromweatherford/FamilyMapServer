@@ -33,15 +33,15 @@ public class FillService {
         if (fillRequest.getGenerations() < 0) {
             throw new InvalidInputException();
         }
-        System.out.println(fillRequest.getGenerations());
         Database db = null;
         try {
-            db = new Database();
-            db.openConnection();
+            db = Database.instance();
 
             UserDAO userDAO = db.getUserDAO();
             User user = userDAO.read(fillRequest.getUser());
             if (user == null) {
+                db.commit(false);
+                db = null;
                 throw new UserNotFoundException();
             }
 
@@ -89,25 +89,28 @@ public class FillService {
                 birthYear -= 35;
             }
 
-            db.closeConnection(true);
+            db.commit(true);
             db = null;
             String message = "Successfully added " + peopleAdded + " people and "
                     + eventsAdded + " events to the database";
             return new MessageResponse(message);
         }
         catch (DatabaseException e) {
-            try {
-                if (db != null) {
-                    db.closeConnection(false);
+            e.printStackTrace();
+            throw new InternalServerErrorException("Database failed");
+        }
+        finally {
+            if (db != null) {
+                try {
+                    db.commit(false);
                     db = null;
-                    return new MessageResponse("Failed to fill the database");
+                }
+                catch (DatabaseException e) {
+                    System.out.println("FAILED TO CLOSE CONNECTION");
+                    throw new InternalServerErrorException("FAILED TO CLOSE CONNECTION!");
                 }
             }
-            catch (DatabaseException de) {
-                throw new InternalServerErrorException("FAILED TO CLOSE CONNECTION!");
-            }
         }
-        return new MessageResponse("If you can read this, something really weird happened");
     }
 
     private List<Person> createParents(Person person, int birthYear, User user, EventDAO eventDAO,

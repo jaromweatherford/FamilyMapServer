@@ -91,6 +91,9 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         if (!this.getClass().equals(o.getClass())) {
             return false;
         }

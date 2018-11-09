@@ -109,4 +109,31 @@ public class Person {
     public void setSpouseID(String spouseID) {
         this.spouse = spouseID;
     }
+
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (!this.getClass().equals(o.getClass())) {
+            return false;
+        }
+        Person rhs = (Person) o;
+        if ((father == null) != (rhs.father == null) ||
+                (mother == null) != (rhs.mother == null) ||
+                (spouse == null) != (rhs.spouse == null)) {
+            return false;
+        }
+        if (father != null && !father.equals(rhs.father)) {
+            return false;
+        }
+        if (mother != null && !mother.equals(rhs.mother)) {
+            return false;
+        }
+        if (spouse != null && !spouse.equals(rhs.spouse)) {
+            return false;
+        }
+        return (personID.equals(rhs.personID) && descendant.equals(rhs.descendant) &&
+                firstName.equals(rhs.firstName) && lastName.equals(rhs.lastName) &&
+                gender.equals(rhs.gender));
+    }
 }

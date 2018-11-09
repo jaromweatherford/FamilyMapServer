@@ -36,4 +36,15 @@ public class AuthToken {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (!this.getClass().equals(o.getClass())) {
+            return false;
+        }
+        AuthToken rhs = (AuthToken) o;
+        return (userName.equals(rhs.userName) && code.equals(rhs.code));
+    }
 }
